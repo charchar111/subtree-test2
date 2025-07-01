@@ -1,69 +1,72 @@
-# React + TypeScript + Vite
+## 🔧 브랜치 운영 전략 (main / dev 분리)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+이 저장소는 공유 컴포넌트 모듈을 관리하기 위해, 아래와 같이 **브랜치 분리 전략**을 사용합니다.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📁 브랜치 역할
 
-## Expanding the ESLint configuration
+1. **`main` 브랜치**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+   - 다른 프로젝트에서 `git subtree`로 공유할 파일만 포함
+   - 예: `src/`, `index.ts`, `tsconfig.json` 등
+   - 테스트 코드, 문서, 스토리북, 설정 파일 등은 포함하지 않음
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. **`dev` 브랜치**
+   - 전체 개발 및 테스트 작업을 수행하는 브랜치
+   - 테스트 코드(`test/`), 스토리북(`.storybook/`), 문서 등 포함
+   - `main`에는 포함되지 않는 개발 리소스를 자유롭게 활용 가능
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 🔁 반영 프로세스
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+4. 개발이 완료되면 `dev`에서 `main`으로 공유 대상 디렉토리(`src/`)만 반영합니다.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   - 일반적인 `merge`, `cherry-pick`, `rebase`는 **전체 변경 이력을 포함하므로 사용하지 않습니다**
+   - 대신 다음 명령어처럼 **공유 디렉토리만 가져오는 방식**을 사용합니다:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+   ```bash
+   git checkout main
+   git checkout dev -- src index.ts tsconfig.json
+   git commit -am "release: 공유 디렉토리 반영"
+   git push origin main
+   ```
+
+#### 주의. 수동으로 이 커맨드를 사용하면 에러를 우려하여 쓰지 않습니다. 대신, 아래의 자동화 커맨드를 사용해주세요.
+
+---
+
+### ⚠️ 주의사항 및 리스크
+
+3. 이 방식은 main과 dev 간에 **공통 조상(commit base)이 존재하지 않게 되므로, Git 히스토리 상에서 브랜치 간 연관관계를 추적할 수 없습니다.**
+
+   - 즉, Git은 `main`과 `dev`가 어떤 시점에서 파생되었는지 알 수 없어, 병합 도구 사용 시 충돌 추적이 불가능합니다.
+
+4. 이러한 리스크를 방지하기 위해 아래와 같은 방식으로 운영합니다:
+
+   - main 브랜치는 절대 수동으로 수정하지 않으며, 항상 자동화 스크립트를 통해 반영합니다.
+   - main과 dev 간 관계는 README나 release-log.md 등에 명시하여 수동 관리합니다.
+
+---
+
+### 📄 예시 반영 기록
+
+| 버전   | 기준 커밋 (dev) | 반영 일자  | 설명                          |
+| ------ | --------------- | ---------- | ----------------------------- |
+| v0.4.1 | 54d2eab         | 2025-07-01 | Button 컴포넌트 개선, DB 연결 |
+| v0.4.0 | 7e123aa         | 2025-06-24 | 초기 구조 구축 및 첫 배포     |
+
+### 자동화 커맨드
+
+이 커맨드는 main 브랜치에 dev의 src/ 만을 반영하고 별도의 커밋을 생성합니다.
+
+그리고 커밋 사항의 요약, 해시 및 날짜를 `release-log.md`에 기록합니다.
+
+---
+
+## 모듈 설명
+
+### 시작하기
+
+모듈의 의존성은 다음과 같습니다.
