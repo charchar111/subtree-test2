@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "release-to-main": "sh scripts/release-to-main.sh"
+    "release-to-main": "node scripts/release-to-main.js"
   },
   "dependencies": {
     "react": "^19.1.0",
