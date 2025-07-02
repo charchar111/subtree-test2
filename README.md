@@ -67,6 +67,61 @@
 
 ## 모듈 설명
 
+이 저장소는 **다른 프로젝트에서 공유 컴포넌트로 활용**할 수 있도록 설계되었습니다.
+
+# 프로젝트 A에서 shared 모듈 수정 및 기여 워크플로우
+
+---
+
+## 개요
+
+- 프로젝트 A는 shared 저장소 일부를 subtree로 가져와 사용합니다.
+- shared 저장소는 독립적인 git 저장소입니다.
+- 프로젝트 A 내에서 shared 코드를 수정하고 shared 저장소의 dev 브랜치에 직접 푸시할 수 있습니다.
+- fork 없이 직접 PR 또는 push가 가능합니다.
+
+---
+
+### 1. shared 저장소를 A 프로젝트 remote로 추가 (한 번만)
+
+subtree를 가져올 원격 저장소를 `shared-origin`으로 등록합니다.
+
+```bash
+git remote add shared-origin https://github.com/charchar111/subtree-test1.git
+```
+
+### 2. shared 저장소의 main 브랜치를 A 프로젝트에 subtree로 가져오기
+
+프로젝트 A 내 shared/에 서브 트리 저장소 main을 가져옵니다.
+
+```bash
+git subtree add --prefix=shared shared-origin main --squash
+```
+
+만약 이미 shared/ 폴더가 추가되어 있을 경우 아래처럼 최신화 가능합니다
+
+```bash
+git subtree pull --prefix=shared shared-origin main --squash
+```
+
+### 3. A 프로젝트 내에서 shared 코드 수정 및 커밋
+
+만약 a에서 shared의 코드를 수정하고 다른 사람에게 공유하고자 한다면
+아래처럼 shared를 추가하고 커밋을 만들어주세요
+
+```bash
+git add shared/
+git commit -m "fix: 프로젝트 A에서 shared 컴포넌트 수정"
+```
+
+### 4. 수정 사항을 shared 저장소의 dev 브랜치로 푸시
+
+```bash
+git push shared-origin HEAD:dev
+```
+
+---
+
 ### 시작하기
 
 모듈의 의존성은 다음과 같습니다.
