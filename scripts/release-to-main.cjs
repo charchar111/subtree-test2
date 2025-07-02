@@ -10,7 +10,7 @@ const releaseDate = now.toISOString().slice(0, 10);
 
 function run(cmd) {
   console.log(`🔧 ${cmd}`);
-  return execSync(cmd, { stdio: "inherit" });
+  return execSync(cmd);
 }
 
 function getLatestDevHash() {
