@@ -148,6 +148,22 @@ git push  subtree1 split-subtree:main
 # 사용 후 해당 브랜치는 삭제
 ```
 
+## 독자적으로 공유 프로젝트 개발을 하는 경우
+
+중요한 건, dev 브랜치와 그 서브 트리 브랜치인 main 브랜치 간에 동기화 입니다.
+
+### dev => main으로 동기화
+
+dev 브랜치에서 서브트리가 추가된 폴더(eg : ./src)의 변경사항을 main으로 반영하려면 다음 명령을 씁니다.
+
+```bash
+git subtree push --prefix=src . main
+```
+
+### main => dev으로 동기화
+
+git subtree pull --prefix=src . main
+
 # 고급
 
 ## 메타 파일 관리
