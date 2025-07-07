@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 function App() {
-  console.log("main 수정2");
+  console.log("main 수정3");
   const [count, setCount] = useState(0);
 
   return (
