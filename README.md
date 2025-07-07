@@ -148,8 +148,37 @@ git push  subtree1 split-subtree:main
 # 사용 후 해당 브랜치는 삭제
 ```
 
-## 독자적으로 테스트하는 경우
+# 고급
 
-### 시작하기
+## 메타 파일 관리
 
-모듈의 의존성은 다음과 같습니다.
+이론상 main은 실질적 공유 패키지, dev는 그 외의 모든 테스트 및 로컬 개발용 파일이라 구분했습니다만,
+main에도 공유를 위한 최소한의 meta 파일이 포함됩니다.
+
+메타 파일 종류는 아래와 같습니다.
+
+### 중요도: 필수
+
+#### gitignore
+
+main 브랜치를 커밋할 때 불필요한 파일을 제외하는 목적입니다.
+
+main과 dev를 git checkout으로 오고 갈때 git은 두 브랜치 간에 차이를 비교하여 파일을 수정 및 추가, 삭제합니다.
+하지만, untrack file로 설정된 것들은 이런 수정 작업이 이뤄지지 않는데, 대표적으로 node_modules는 main으로 checkout을 하여도 그대로 남아있습니다.
+
+만약, gitignore이 없다면 이런 파일들이 그대로 원격 저장소에 올라가버리니, 이를 방지하기 위해 main에 별도의 gitignore이 필요합니다.
+
+- git은 프로젝트 내 모든 gitignore을 통합하여 제외할 파일을 선별합니다. gitignore은 기본적으로 자기 위치의 하위에 모든 디렉토리에 적용되다가, 다른 gitignore을 만나면
+  해당 설정을 국소적으로 적용하는 방식입니다. (예컨대, ./src/asset/.gitignore은 ./,gitignore과 별개로 .src/asset/ 내에서만 작동합니다)
+
+#### package.json
+
+#### tsconfig.json
+
+#### README.md
+
+#### index.ts
+
+배럴 익스포트 전용 파일입니다.
+
+### 중요도: 선택

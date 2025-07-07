@@ -27,3 +27,5 @@ dist-ssr
 
 # 실행 파일 찌꺼기?
 .vite
+*storybook.log
+storybook-static
