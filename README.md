@@ -77,7 +77,7 @@
 
 - 프로젝트 A는 shared 저장소 일부를 subtree로 가져와 사용합니다.
 - shared 저장소는 독립적인 git 저장소입니다.
-- 프로젝트 A 내에서 shared 코드를 수정하고 shared 저장소의 dev 브랜치에 직접 푸시할 수 있습니다.
+- 프로젝트 A 내에서 shared 코드를 수정하고 shared 저장소의 main 브랜치에 직접 푸시할 수 있습니다.(main을 사용하면, main으로 밖에 푸시가 안되며, dev는 분리되어 있어 불가능합니다)
 - fork 없이 직접 PR 또는 push가 가능합니다.
 
 ---
@@ -114,10 +114,25 @@ git add shared/
 git commit -m "fix: 프로젝트 A에서 shared 컴포넌트 수정"
 ```
 
-### 4. 수정 사항을 shared 저장소의 dev 브랜치로 푸시
+### 4. 수정 사항을 shared 저장소의 main 브랜치로 푸시
+
+기본 방식
 
 ```bash
-git push shared-origin HEAD:dev
+git subtree push --prefix=shared <원격 서브 레포> <브랜치명>
+# 원 레포의 트리에서 src/subtree 내 변경사항만 서브 트리 레포의 브랜치에 반영함
+```
+
+#### 고급 방식 split 사용하기
+
+```bash
+# 서브트리 디렉토리의 변경사항만 정제하여 split-subtree 브랜치로 추가
+git subtree split --prefix=shared -b split-subtree
+
+# git push  <원격 서브트리레포> <스플릿 브랜치>:<원격 서브트리 레포의 브랜치>
+git push  subtree1 split-subtree:main
+
+# 사용 후 해당 브랜치는 삭제
 ```
 
 ---
