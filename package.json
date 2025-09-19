@@ -13,7 +13,7 @@
     "build-storybook": "storybook build"
   },
   "workspaces": [
-    "srcs"
+    "src"
   ],
   "dependencies": {
     "@types/node": "^24.0.10",

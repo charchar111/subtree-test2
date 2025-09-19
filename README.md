@@ -152,6 +152,28 @@ git push  subtree1 split-subtree:main
 
 중요한 건, dev 브랜치와 그 서브 트리 브랜치인 main 브랜치 간에 동기화 입니다.
 
+---
+
+이를 위해서 dev 브랜치의 공유 모듈인 src를 `git subtree split`으로 분리하여 main 브랜치를 만듭니다.
+(아래는 사용자가 할 필요 없는 과정이며 참고용입니다)
+
+```bash
+git subtree split --prefix=srv -b main
+
+```
+
+이후 dev 브랜치에서 공유 모듈 src를 삭제하고 main 브랜치를 src에 서브트리로 추가합니다.
+
+```bash
+# .은 자기 자신을 가리킵니다.
+git subtree add --prefix=src . main
+
+```
+
+---
+
+**아래부터 사용자가 직접해야할 동기화 과정입니다.**
+
 ### dev => main으로 동기화
 
 dev 브랜치에서 서브트리가 추가된 폴더(eg : ./src)의 변경사항을 main으로 반영하려면 다음 명령을 씁니다.
